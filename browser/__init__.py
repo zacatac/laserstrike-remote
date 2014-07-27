@@ -4,8 +4,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-chromedriver_path = '/Users/zrfield/laserstrike/chromedriver'
-driver = webdriver.Chrome(chromedriver_path) 
+# chromedriver_path = '/Users/zrfield/laserstrike/chromedriver'
+driver = webdriver.PhantomJS() 
 driver.get("http://192.168.10.103/lasertag/lt_game/game_main.php")
 
 wait = WebDriverWait(driver, 10) 
