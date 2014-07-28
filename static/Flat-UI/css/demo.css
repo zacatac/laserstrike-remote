@@ -3,7 +3,7 @@
   border-top-color: #34495e !important;
 }
 .container {
-  width: 970px !important;
+  width: 100%;
 }
 .demo-headline {
   padding: 73px 0 110px;
@@ -50,6 +50,13 @@
   bottom: auto;
   top: 10px;
 }
+
+.demo-names{
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 20px;
+}
+
 .demo-row.typography-row .demo-content {
   float: none;
   width: auto;

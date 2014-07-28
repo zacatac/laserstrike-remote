@@ -5,8 +5,9 @@
     <title>Laserstrike</title>
     <!-- <meta name="description" content="Flat UI Kit Free is a Twitter Bootstrap Framework design and Theme, this responsive framework includes a PSD and HTML version."/> -->
 
-    <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
-
+    <!-- <meta name="viewport" content="width=250, initial-scale=1.0, maximum-scale=1.0"> -->
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- Loading Bootstrap -->
     <link href="static/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
 
@@ -25,47 +26,55 @@
   </head>
   <body onload="timedRefresh(5000);">
     <div class="container">
-      <div class="demo-headline">
-        <h1 class="demo-logo">
-          <div class="logo"></div>
+      <div class="row">
+        <h1>
+        <!--   <div class="logo"></div>--> 
           Laserstrike
-	  <!-- <small>Free User Interface Kit</small> -->
         </h1>
-      </div> <!-- /demo-headline -->
+      </div> <!-- /demo-headline --> 
 
       <!-- <h1 class="demo-section-title">Basic elements</h1>
       <h3 class="demo-panel-title">Buttons</h3> -->
       <div class="row demo-row">
+      <div class="col-md-2 demo-names">
+          <a href="#" class="btn btn-block btn-lg btn-info">Time: {{ time }} </a>
+        </div>
+         <div class="col-md-2 demo-names">
+          <a href="#" class="btn btn-block btn-lg btn-info">Game: {{ num }} </a>
+        </div>
 	{% if ready %}
-        <div class="col-xs-3">
+        <div class="col-md-2 demo-names">
           <a href="{{ url_for('ready') }}" class="btn btn-block btn-lg btn-primary">Ready</a>
         </div>
 	{% endif %}
 	{% if start %}
-        <div class="col-xs-3">
+        <div class="col-md-2  demo-names">
           <a href="{{ url_for('start') }}" class="btn btn-block btn-lg btn-warning">Start</a>
         </div>
 	{% endif %}
 	{% if save %}
-        <div class="col-xs-3">
+        <div class="col-md-2 demo-names">
           <a href="{{ url_for('save') }}" class="btn btn-block btn-lg btn-default">Save</a>
         </div>
 	{% endif %}
-	{% if printb %}
-        <div class="col-xs-3">
+	{% if print %}
+        <div class="col-md-2 demo-names">
           <a href="{{ url_for('print_scores') }}" class="btn btn-block btn-lg btn-danger">Print</a>
         </div>
 	{% endif %}
 	{% if receive %}
-        <div class="col-xs-3">
+        <div class="col-md-2 demo-names">
           <a href="{{ url_for('receive') }}" class="btn btn-block btn-lg btn-success">Receive</a>
         </div>
 	{% endif %}
 	{% if abort %}
-	<div class="col-xs-3">
+	<div class="col-md-2 demo-names">
           <a href="{{ url_for('abort') }}" class="btn btn-block btn-lg btn-inverse">Abort</a>
         </div>
 	{% endif %}
+  <div class="col-md-2 demo-names">
+          <a href="#" class="btn btn-block btn-lg btn-info">Player1: {{ name }} </a>
+        </div>
       </div> <!-- /row -->
 
 
@@ -74,7 +83,7 @@
     <footer>
       <div class="container">
         <div class="row">
-          <div class="col-xs-7">
+          <div class="col-md-3">
             <h3 class="footer-title">Created by Zack Field</h3>
           </div> <!-- /col-xs-7 -->
 	  
