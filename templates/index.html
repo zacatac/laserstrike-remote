@@ -9,22 +9,26 @@
     <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <!-- Loading Bootstrap -->
-    <link href="static/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <!-- <link href="static/Flat-UI/bootstrap/css/bootstrap.css" rel="stylesheet">
 
     <!-- Loading Flat UI -->
+    <!--
     <link href="static/Flat-UI/css/flat-ui.css" rel="stylesheet">
-    <link href="static/Flat-UI/css/demo.css" rel="stylesheet">
+    <link href="static/Flat-UI/css/demo.css" rel="stylesheet">-->
+
+    {% assets "css_all" %}
+      <link href="{{ ASSET_URL }}" rel="stylesheet" type="text/css" />
+    {% endassets %}
 
     <link rel="shortcut icon" href="static/Flat-UI/images/favicon.ico">
 
-    <script src="/static/js/index.js"></script>
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
     <!--[if lt IE 9]>
       <script src="js/html5shiv.js"></script>
       <script src="js/respond.min.js"></script>
     <![endif]-->
   </head>
-  <body onload="timedRefresh(5000);">
+  <body onload="timedRefresh(1000);">
     <div class="container">
       <div class="row">
         <h1>
@@ -35,7 +39,8 @@
 
       <!-- <h1 class="demo-section-title">Basic elements</h1>
       <h3 class="demo-panel-title">Buttons</h3> -->
-      <div class="row demo-row">
+      <div id="refresh-row">
+      <div class="row demo-row" id="refresh-row">
       <div class="col-md-2 demo-names">
           <a href="#" class="btn btn-block btn-lg btn-info">Time: {{ time }} </a>
         </div>
@@ -77,7 +82,7 @@
         </div>
       </div> <!-- /row -->
 
-
+    </div>
     </div> <!-- /container -->
 
     <footer>
@@ -91,7 +96,8 @@
       </div>
     </footer>
     
-    <!-- Load JS here for greater good =============================-->
+    <!-- Load JS here for greater good =============================
+    <script src="/static/js/index.js"></script>
     <script src="/static/Flat-UI/js/jquery-1.8.3.min.js"></script>
     <script src="/static/Flat-UI/js/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="/static/Flat-UI/js/jquery.ui.touch-punch.min.js"></script>
@@ -102,9 +108,9 @@
     <script src="/static/Flat-UI/js/flatui-radio.js"></script>
     <script src="/static/Flat-UI/js/jquery.tagsinput.js"></script>
     <script src="/static/Flat-UI/js/jquery.placeholder.js"></script>
-    <!-- <script src="/static/Flat-UI/js/jquery.stacktable.js"></script> -->
-    <script src="http://vjs.zencdn.net/4.3/video.js"></script>
-    <script src="/static/Flat-UI/js/application.js"></script>
-
+    <script src="/static/Flat-UI/js/application.js"></script>-->
+    {% assets "js_all" %}
+      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
+    {% endassets %}
   </body>
 </html>

@@ -1,7 +1,33 @@
 from flask import Flask, render_template, url_for, redirect
+from flask.ext.assets import Environment, Bundle
+from jsmin import jsmin
+from cssmin import cssmin
 from browser import driver, Keys, ready_button, start_button, save_button, print_button, receive_button, abort_button, wait, EC, By
 from browser import StaleElementReferenceException, ElementNotVisibleException, UnexpectedAlertPresentException
 app = Flask(__name__)
+assets = Environment(app)
+
+js = Bundle(
+        'js/index.js', 
+        'Flat-UI/js/jquery-1.8.3.min.js', 
+        'Flat-UI/js/jquery-ui-1.10.3.custom.min.js',
+        'Flat-UI/js/jquery.ui.touch-punch.min.js',
+        'Flat-UI/js/bootstrap.min.js',
+        'Flat-UI/js/bootstrap-select.js',
+        'Flat-UI/js/bootstrap-switch.js',
+        'Flat-UI/js/flatui-checkbox.js',
+        'Flat-UI/js/flatui-radio.js',
+        'Flat-UI/js/jquery.tagsinput.js',
+        'Flat-UI/js/jquery.placeholder.js',
+        'Flat-UI/js/application.js',
+        filters='jsmin', output='gen/packed.js')
+
+css = Bundle(
+        'Flat-UI/bootstrap/css/bootstrap.css',
+        'Flat-UI/css/flat-ui.css',
+        'Flat-UI/css/demo.css', filters='cssmin',output="gen/min.css")
+assets.register('js_all', js)
+assets.register('css_all', css)
 
 buttons = {
     'ready':ready_button,
@@ -88,11 +114,10 @@ def receive():
 @app.route('/abort')
 def abort():
     buttons["abort"].click()
-    wait.until(EC.visibility_of(buttons["save"]))
     wait.until(EC.invisibility_of_element_located((By.ID, 'savebutton')))
     return redirect(url_for('index'))
     
 if __name__ == '__main__':
-    # app.debug = True
+    app.debug = True
     # app.run()
     app.run(host="0.0.0.0")
