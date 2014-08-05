@@ -1,3 +1,9 @@
+import os
+import time
+activate = os.path.abspath('../remote-venv/Scripts/activate_this.py')
+
+execfile(activate, dict(__file__=activate))
+
 from flask import Flask, render_template, url_for, redirect
 from flask.ext.assets import Environment, Bundle
 from jsmin import jsmin
@@ -6,6 +12,8 @@ from browser import driver, Keys, ready_button, start_button, save_button, print
 from browser import StaleElementReferenceException, ElementNotVisibleException, UnexpectedAlertPresentException
 app = Flask(__name__)
 assets = Environment(app)
+
+last_start_time = time.time()
 
 js = Bundle(
         'js/index.js', 
@@ -52,63 +60,86 @@ def visible_buttons(buttons):
             except ElementNotVisibleException:
                 pass
     return visible
-    
+
+def click_button(button):
+    try:
+        buttons[button].click()
+    except StaleElementReferenceException:
+        try:
+            buttons[button] = driver.find_element_by_id("%sbutton" % key)
+        except ElementNotVisibleException:
+            return False
+        buttons[button].click()
+    except Exception:
+        redirect(url_for('index'))
+    return True
+
 @app.route('/')
 def index():   
-    global name 
-    time = driver.find_element_by_id("gametime").text
+    global last_start_time
+    global name
+    gametime = driver.find_element_by_id("gametime").text
+    if gametime in ['5:00','0:00']:
+        gametime = time.time() - last_start_time
+        gametime = "%i:%02i Since last game" % (int(gametime//60), int(gametime%60))
+        print(gametime)
+    else:
+        last_start_time = time.time()
     num = driver.find_element_by_id("gamenumber").text
-    return render_template('index.html', time=time, num=num, name=name, **visible_buttons(buttons))
+    return render_template('index.html', time=gametime, num=num, name=name, **visible_buttons(buttons))
 
 @app.route('/ready')
-def ready():    
-    buttons["ready"].click()
-    wait.until(EC.visibility_of(buttons["start"]))
+def ready(): 
+    if click_button("ready"):
+        wait.until(EC.visibility_of(buttons["start"]))
     return redirect(url_for('index'))
 
 @app.route('/start')
 def start():    
-    buttons["start"].click()
-    wait.until(EC.invisibility_of_element_located((By.ID, 'startbutton')))
+    global last_start_time
+    last_start_time = time.time()
+    if click_button("start"):
+        wait.until(EC.invisibility_of_element_located((By.ID, 'startbutton')))
     return redirect(url_for('index'))
 
 @app.route('/save')
 def save():    
-    buttons["save"].click()
-    wait.until(EC.visibility_of(buttons["ready"]))
+    if click_button("save"):
+        wait.until(EC.visibility_of(buttons["ready"]))
     return redirect(url_for('index'))
 
 @app.route('/print')
-def print_scores():    
-    buttons["print"].click()
-    wait.until(EC.alert_is_present())
-    alert = driver.switch_to_alert()
-    alert.accept()    
+def print_scores():  
+    if click_button("print"):  
+        wait.until(EC.alert_is_present())
+        alert = driver.switch_to_alert()
+        alert.accept()    
     return redirect(url_for('index'))
 
 @app.route('/receive')
 def receive():
-    buttons["receive"].click()
-    try:
-        wait.until(EC.visibility_of(buttons["ready"]))
-    except UnexpectedAlertPresentException:
-        alert = driver.switch_to_alert()
-        alert.accept()
+    if click_button("receive"):
         try:
-            wait.until(EC.visibility_of(buttons["ready"]))
-        except  StaleElementReferenceException:
-            buttons["ready"] = driver.find_element_by_id("readybutton")
-            wait.until(EC.visibility_of(buttons["ready"]))
-    driver.find_element_by_id("editbutton").click()
-    wait.until(EC.presence_of_element_located((By.ID,"VEST1")))
-    global name
-    name = driver.find_element_by_id("VEST1").get_attribute("value")
-    driver.back()
-    try:
-        wait.until(EC.visibility_of(buttons["ready"]))
-    except  StaleElementReferenceException:
-        buttons["ready"] = driver.find_element_by_id("readybutton")
-        wait.until(EC.visibility_of(buttons["ready"]))
+            wait.until(EC.presence_of_element_located((By.ID, "readybutton")))
+        except UnexpectedAlertPresentException:
+            alert = driver.switch_to_alert()
+            alert.accept()
+            try:
+                wait.until(EC.visibility_of(buttons["ready"]))
+            except  StaleElementReferenceException:
+                buttons["ready"] = driver.find_element_by_id("readybutton")
+                wait.until(EC.visibility_of(buttons["ready"]))
+            except Exception:
+                return redirect(url_for('index'))
+
+        except Exception:
+            return redirect(url_for('index'))
+        driver.find_element_by_id("editbutton").click()
+        wait.until(EC.presence_of_element_located((By.ID,"VEST1")))
+        global name
+        name = driver.find_element_by_id("VEST1").get_attribute("value")
+        driver.back()
+        wait.until(EC.presence_of_element_located((By.ID,"readybutton")))
     return redirect(url_for('index'))
 
 @app.route('/abort')
